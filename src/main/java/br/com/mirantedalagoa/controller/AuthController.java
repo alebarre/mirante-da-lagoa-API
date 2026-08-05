@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     @Autowired
@@ -35,7 +34,7 @@ public class AuthController {
     @PostMapping("/forgot")
     public ResponseEntity<?> forgot(@Valid @RequestBody ForgotPasswordRequest request) {
         authService.forgotPassword(request);
-        return ResponseEntity.ok(Map.of("message", "Se o e-mail existir, um código foi enviado."));
+        return ResponseEntity.ok(Map.of("message", "Se o e-mail existir, um cÃ³digo foi enviado."));
     }
 
     @PostMapping("/reset")
@@ -44,3 +43,4 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "Senha redefinida com sucesso."));
     }
 }
+

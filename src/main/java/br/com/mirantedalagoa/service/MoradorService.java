@@ -24,7 +24,7 @@ public class MoradorService implements CrudService<MoradorDTO, MoradorDTO> {
 
     @Override
     public MoradorDTO findById(UUID id) {
-        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Morador não encontrado")));
+        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Morador nao encontrado")));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class MoradorService implements CrudService<MoradorDTO, MoradorDTO> {
     @Override
     @Transactional
     public MoradorDTO update(UUID id, MoradorDTO dto) {
-        Morador existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Morador não encontrado"));
-        Morador updated = toEntity(dto);
-        updated.setId(existing.getId());
-        updated.setCreatedAt(existing.getCreatedAt());
-        updated.setUpdatedAt(Instant.now());
-        return toDTO(repository.save(updated));
+        Morador existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Morador nao encontrado"));
+        updateEntity(existing, dto);
+        existing.setUpdatedAt(Instant.now());
+        return toDTO(repository.save(existing));
     }
 
     @Override
@@ -59,23 +57,26 @@ public class MoradorService implements CrudService<MoradorDTO, MoradorDTO> {
     }
 
     private Morador toEntity(MoradorDTO dto) {
-        return Morador.builder()
-            .id(dto.id())
-            .fullName(dto.fullName())
-            .cpf(dto.cpf())
-            .rg(dto.rg())
-            .birthDate(dto.birthDate())
-            .phone(dto.phone())
-            .email(dto.email())
-            .block(dto.block())
-            .apartment(dto.apartment())
-            .parkingSpot(dto.parkingSpot())
-            .pets(dto.pets())
-            .owner(dto.owner())
-            .moveInDate(dto.moveInDate())
-            .moveOutDate(dto.moveOutDate())
-            .emergencyContact(dto.emergencyContact())
-            .notes(dto.notes())
-            .build();
+        Morador entity = new Morador();
+        updateEntity(entity, dto);
+        return entity;
+    }
+
+    private void updateEntity(Morador entity, MoradorDTO dto) {
+        entity.setFullName(dto.fullName());
+        entity.setCpf(dto.cpf());
+        entity.setRg(dto.rg());
+        entity.setBirthDate(dto.birthDate());
+        entity.setPhone(dto.phone());
+        entity.setEmail(dto.email());
+        entity.setBlock(dto.block());
+        entity.setApartment(dto.apartment());
+        entity.setParkingSpot(dto.parkingSpot());
+        entity.setPets(dto.pets());
+        entity.setOwner(dto.owner());
+        entity.setMoveInDate(dto.moveInDate());
+        entity.setMoveOutDate(dto.moveOutDate());
+        entity.setEmergencyContact(dto.emergencyContact());
+        entity.setNotes(dto.notes());
     }
 }

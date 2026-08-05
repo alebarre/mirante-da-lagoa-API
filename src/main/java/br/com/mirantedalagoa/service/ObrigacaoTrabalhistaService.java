@@ -24,7 +24,7 @@ public class ObrigacaoTrabalhistaService implements CrudService<ObrigacaoTrabalh
 
     @Override
     public ObrigacaoTrabalhistaDTO findById(UUID id) {
-        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Obrigação não encontrada")));
+        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Obrigacao nao encontrada")));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class ObrigacaoTrabalhistaService implements CrudService<ObrigacaoTrabalh
     @Override
     @Transactional
     public ObrigacaoTrabalhistaDTO update(UUID id, ObrigacaoTrabalhistaDTO dto) {
-        ObrigacaoTrabalhista existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Obrigação não encontrada"));
-        ObrigacaoTrabalhista updated = toEntity(dto);
-        updated.setId(existing.getId());
-        updated.setCreatedAt(existing.getCreatedAt());
-        updated.setUpdatedAt(Instant.now());
-        return toDTO(repository.save(updated));
+        ObrigacaoTrabalhista existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Obrigacao nao encontrada"));
+        updateEntity(existing, dto);
+        existing.setUpdatedAt(Instant.now());
+        return toDTO(repository.save(existing));
     }
 
     @Override
@@ -58,16 +56,19 @@ public class ObrigacaoTrabalhistaService implements CrudService<ObrigacaoTrabalh
     }
 
     private ObrigacaoTrabalhista toEntity(ObrigacaoTrabalhistaDTO dto) {
-        return ObrigacaoTrabalhista.builder()
-            .id(dto.id())
-            .name(dto.name())
-            .description(dto.description())
-            .periodicity(dto.periodicity())
-            .dueDate(dto.dueDate())
-            .completedAt(dto.completedAt())
-            .responsible(dto.responsible())
-            .status(dto.status())
-            .notes(dto.notes())
-            .build();
+        ObrigacaoTrabalhista entity = new ObrigacaoTrabalhista();
+        updateEntity(entity, dto);
+        return entity;
+    }
+
+    private void updateEntity(ObrigacaoTrabalhista entity, ObrigacaoTrabalhistaDTO dto) {
+        entity.setName(dto.name());
+        entity.setDescription(dto.description());
+        entity.setPeriodicity(dto.periodicity());
+        entity.setDueDate(dto.dueDate());
+        entity.setCompletedAt(dto.completedAt());
+        entity.setResponsible(dto.responsible());
+        entity.setStatus(dto.status());
+        entity.setNotes(dto.notes());
     }
 }

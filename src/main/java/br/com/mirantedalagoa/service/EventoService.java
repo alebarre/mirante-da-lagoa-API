@@ -24,7 +24,7 @@ public class EventoService implements CrudService<EventoDTO, EventoDTO> {
 
     @Override
     public EventoDTO findById(UUID id) {
-        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Evento não encontrado")));
+        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Evento nao encontrado")));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class EventoService implements CrudService<EventoDTO, EventoDTO> {
     @Override
     @Transactional
     public EventoDTO update(UUID id, EventoDTO dto) {
-        Evento existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Evento não encontrado"));
-        Evento updated = toEntity(dto);
-        updated.setId(existing.getId());
-        updated.setCreatedAt(existing.getCreatedAt());
-        updated.setUpdatedAt(Instant.now());
-        return toDTO(repository.save(updated));
+        Evento existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Evento nao encontrado"));
+        updateEntity(existing, dto);
+        existing.setUpdatedAt(Instant.now());
+        return toDTO(repository.save(existing));
     }
 
     @Override
@@ -59,18 +57,21 @@ public class EventoService implements CrudService<EventoDTO, EventoDTO> {
     }
 
     private Evento toEntity(EventoDTO dto) {
-        return Evento.builder()
-            .id(dto.id())
-            .title(dto.title())
-            .description(dto.description())
-            .startAt(dto.startAt())
-            .endAt(dto.endAt())
-            .location(dto.location())
-            .organizer(dto.organizer())
-            .status(dto.status())
-            .restrictedToResidents(dto.restrictedToResidents())
-            .maxParticipants(dto.maxParticipants())
-            .notes(dto.notes())
-            .build();
+        Evento entity = new Evento();
+        updateEntity(entity, dto);
+        return entity;
+    }
+
+    private void updateEntity(Evento entity, EventoDTO dto) {
+        entity.setTitle(dto.title());
+        entity.setDescription(dto.description());
+        entity.setStartAt(dto.startAt());
+        entity.setEndAt(dto.endAt());
+        entity.setLocation(dto.location());
+        entity.setOrganizer(dto.organizer());
+        entity.setStatus(dto.status());
+        entity.setRestrictedToResidents(dto.restrictedToResidents());
+        entity.setMaxParticipants(dto.maxParticipants());
+        entity.setNotes(dto.notes());
     }
 }

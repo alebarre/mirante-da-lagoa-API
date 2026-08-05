@@ -1,0 +1,29 @@
+﻿services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mirante-lagoa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-mirante_lagoa}
+      POSTGRES_USER: ${DB_USER:-mirante}
+      POSTGRES_PASSWORD: ${DB_PASS:-mirante123}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./src/main/resources/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-mirante} -d ${DB_NAME:-mirante_lagoa}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mirante-network
+
+volumes:
+  postgres_data:
+
+networks:
+  mirante-network:
+    driver: bridge

@@ -24,7 +24,7 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
 
     @Override
     public FuncionarioDTO findById(UUID id) {
-        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionário não encontrado")));
+        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionario nao encontrado")));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
     @Override
     @Transactional
     public FuncionarioDTO update(UUID id, FuncionarioDTO dto) {
-        Funcionario existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
-        Funcionario updated = toEntity(dto);
-        updated.setId(existing.getId());
-        updated.setCreatedAt(existing.getCreatedAt());
-        updated.setUpdatedAt(Instant.now());
-        return toDTO(repository.save(updated));
+        Funcionario existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionario nao encontrado"));
+        updateEntity(existing, dto);
+        existing.setUpdatedAt(Instant.now());
+        return toDTO(repository.save(existing));
     }
 
     @Override
@@ -61,23 +59,26 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
     }
 
     private Funcionario toEntity(FuncionarioDTO dto) {
-        return Funcionario.builder()
-            .id(dto.id())
-            .fullName(dto.fullName())
-            .cpf(dto.cpf())
-            .rg(dto.rg())
-            .birthDate(dto.birthDate())
-            .phone(dto.phone())
-            .email(dto.email())
-            .address(dto.address())
-            .position(dto.position())
-            .department(dto.department())
-            .hireDate(dto.hireDate())
-            .terminationDate(dto.terminationDate())
-            .salary(dto.salary())
-            .workRegime(dto.workRegime())
-            .bankAccount(dto.bankAccount())
-            .notes(dto.notes())
-            .build();
+        Funcionario entity = new Funcionario();
+        updateEntity(entity, dto);
+        return entity;
+    }
+
+    private void updateEntity(Funcionario entity, FuncionarioDTO dto) {
+        entity.setFullName(dto.fullName());
+        entity.setCpf(dto.cpf());
+        entity.setRg(dto.rg());
+        entity.setBirthDate(dto.birthDate());
+        entity.setPhone(dto.phone());
+        entity.setEmail(dto.email());
+        entity.setAddress(dto.address());
+        entity.setPosition(dto.position());
+        entity.setDepartment(dto.department());
+        entity.setHireDate(dto.hireDate());
+        entity.setTerminationDate(dto.terminationDate());
+        entity.setSalary(dto.salary());
+        entity.setWorkRegime(dto.workRegime());
+        entity.setBankAccount(dto.bankAccount());
+        entity.setNotes(dto.notes());
     }
 }

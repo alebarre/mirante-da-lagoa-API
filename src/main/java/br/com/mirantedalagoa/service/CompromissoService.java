@@ -24,7 +24,7 @@ public class CompromissoService implements CrudService<CompromissoDTO, Compromis
 
     @Override
     public CompromissoDTO findById(UUID id) {
-        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Compromisso não encontrado")));
+        return toDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Compromisso nao encontrado")));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class CompromissoService implements CrudService<CompromissoDTO, Compromis
     @Override
     @Transactional
     public CompromissoDTO update(UUID id, CompromissoDTO dto) {
-        Compromisso existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Compromisso não encontrado"));
-        Compromisso updated = toEntity(dto);
-        updated.setId(existing.getId());
-        updated.setCreatedAt(existing.getCreatedAt());
-        updated.setUpdatedAt(Instant.now());
-        return toDTO(repository.save(updated));
+        Compromisso existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Compromisso nao encontrado"));
+        updateEntity(existing, dto);
+        existing.setUpdatedAt(Instant.now());
+        return toDTO(repository.save(existing));
     }
 
     @Override
@@ -58,14 +56,17 @@ public class CompromissoService implements CrudService<CompromissoDTO, Compromis
     }
 
     private Compromisso toEntity(CompromissoDTO dto) {
-        return Compromisso.builder()
-            .id(dto.id())
-            .title(dto.title())
-            .description(dto.description())
-            .scheduledAt(dto.scheduledAt())
-            .location(dto.location())
-            .responsible(dto.responsible())
-            .status(dto.status())
-            .build();
+        Compromisso entity = new Compromisso();
+        updateEntity(entity, dto);
+        return entity;
+    }
+
+    private void updateEntity(Compromisso entity, CompromissoDTO dto) {
+        entity.setTitle(dto.title());
+        entity.setDescription(dto.description());
+        entity.setScheduledAt(dto.scheduledAt());
+        entity.setLocation(dto.location());
+        entity.setResponsible(dto.responsible());
+        entity.setStatus(dto.status());
     }
 }
