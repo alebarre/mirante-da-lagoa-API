@@ -1,11 +1,14 @@
 package br.com.mirantedalagoa.service;
 
+import jakarta.activation.URLDataSource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,12 +22,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @Value("${spring.mail.from:}")
     private String fromAddress;
 
     public void sendPasswordResetCode(String to, String code) {
-        String htmlBody = buildPasswordResetHtml(code);
-
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -33,11 +37,17 @@ public class EmailService {
             }
             helper.setTo(to);
             helper.setSubject("Mirante da Lagoa - Código de recuperação de senha");
-            helper.setText(htmlBody, true);
+            helper.setText(buildPasswordResetHtml(code), true);
+
+            Resource image = resourceLoader.getResource("classpath:static/images/coqueiro-transparente.png");
+            if (image.exists()) {
+                helper.addInline("coqueiroLogo", new URLDataSource(image.getURL()));
+            }
+
             mailSender.send(message);
             logger.info("Código de recuperação enviado para {}", to);
-        } catch (MessagingException e) {
-            logger.error("Falha ao montar e-mail HTML de recuperação: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Falha ao enviar e-mail HTML de recuperação: {}", e.getMessage());
             fallbackSendPasswordResetCode(to, code);
         }
     }
@@ -70,9 +80,8 @@ public class EmailService {
             "<table role=\"presentation\" width=\"480\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"max-width:480px;width:100%;\">" +
             "<tr>" +
             "<td style=\"background:#ffffff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.12);padding:36px;text-align:center;\">" +
-            "<h1 style=\"margin:0 0 6px;color:#1e3c72;font-size:26px;font-weight:600;\">" +
-            "<span style=\"color:#27ae60;\">&#9670;</span> Mirante da Lagoa" +
-            "</h1>" +
+            "<img src=\"cid:coqueiroLogo\" alt=\"Mirante da Lagoa\" style=\"width:120px;height:auto;margin-bottom:12px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));\" />" +
+            "<h1 style=\"margin:0 0 6px;color:#1e3c72;font-size:26px;font-weight:600;\">Mirante da Lagoa</h1>" +
             "<p style=\"margin:0 0 24px;color:#6c757d;font-size:14px;\">Saquarema/RJ - Acesso ao sistema</p>" +
             "<h2 style=\"margin:0 0 12px;color:#212529;font-size:18px;font-weight:600;\">Recuperação de Senha</h2>" +
             "<p style=\"margin:0 0 24px;color:#495057;font-size:15px;line-height:1.6;\">" +
