@@ -28,6 +28,7 @@ public class ObrigacaoTrabalhista {
     private String status; // PENDENTE, EM_DIA, ATRASADO, CANCELADO
     private String notes;
 
+    @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 

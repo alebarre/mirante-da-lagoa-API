@@ -22,7 +22,9 @@ public class PasswordResetCode {
     @Column(nullable = false)
     private Instant expiresAt;
 
+    @Builder.Default
     private boolean used = false;
 
+    @Builder.Default
     private Instant createdAt = Instant.now();
 }

@@ -26,6 +26,7 @@ public class Compromisso {
     private String responsible;
     private String status; // AGENDADO, REALIZADO, CANCELADO
 
+    @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 

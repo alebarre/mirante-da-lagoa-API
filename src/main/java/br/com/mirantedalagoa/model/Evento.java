@@ -26,10 +26,12 @@ public class Evento {
     private String location; // salão de festas, piscina, área comum
     private String organizer;
     private String status; // AGENDADO, CONFIRMADO, CANCELADO, REALIZADO
+    @Builder.Default
     private boolean restrictedToResidents = false;
     private Integer maxParticipants;
     private String notes;
 
+    @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 

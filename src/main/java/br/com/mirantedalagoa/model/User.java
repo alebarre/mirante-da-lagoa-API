@@ -26,7 +26,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Builder.Default
     private boolean active = true;
 
+    @Builder.Default
     private Instant createdAt = Instant.now();
 }

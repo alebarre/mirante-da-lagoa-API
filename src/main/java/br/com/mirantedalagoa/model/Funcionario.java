@@ -33,6 +33,7 @@ public class Funcionario {
     private String bankAccount;
     private String notes;
 
+    @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 

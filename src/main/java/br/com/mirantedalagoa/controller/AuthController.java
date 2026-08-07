@@ -34,7 +34,7 @@ public class AuthController {
     @PostMapping("/forgot")
     public ResponseEntity<?> forgot(@Valid @RequestBody ForgotPasswordRequest request) {
         authService.forgotPassword(request);
-        return ResponseEntity.ok(Map.of("message", "Se o e-mail existir, um cÃ³digo foi enviado."));
+        return ResponseEntity.ok(Map.of("message", "Se o e-mail existir, um código foi enviado."));
     }
 
     @PostMapping("/reset")

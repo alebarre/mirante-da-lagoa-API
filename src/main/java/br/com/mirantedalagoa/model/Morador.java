@@ -31,12 +31,14 @@ public class Morador {
 
     private String parkingSpot;
     private String pets;
+    @Builder.Default
     private boolean owner = true;
     private LocalDate moveInDate;
     private LocalDate moveOutDate;
     private String emergencyContact;
     private String notes;
 
+    @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
