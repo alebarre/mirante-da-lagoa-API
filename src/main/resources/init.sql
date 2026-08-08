@@ -124,3 +124,13 @@ CREATE TABLE IF NOT EXISTS password_reset_codes (
     used BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS parametros_condominio (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    categoria VARCHAR(100) NOT NULL,
+    chave VARCHAR(100) NOT NULL UNIQUE,
+    descricao TEXT,
+    valor_numerico DECIMAL(12,4),
+    valor_texto VARCHAR(500),
+    atualizado_em TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
