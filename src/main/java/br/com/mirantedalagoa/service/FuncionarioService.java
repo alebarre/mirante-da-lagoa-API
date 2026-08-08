@@ -28,6 +28,9 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
     @Autowired
     private FuncionarioOcorrenciaRepository ocorrenciaRepository;
 
+    @Autowired
+    private ParametroCondominioService parametroService;
+
     @Override
     public List<FuncionarioDTO> listAll() {
         return repository.findAll().stream().map(this::toDTO).toList();
@@ -43,6 +46,7 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
     public FuncionarioDTO create(FuncionarioDTO dto) {
         Funcionario entity = toEntity(dto);
         entity.setCreatedAt(Instant.now());
+        calcularEncargos(entity);
         return toDTO(repository.save(entity));
     }
 
@@ -52,7 +56,37 @@ public class FuncionarioService implements CrudService<FuncionarioDTO, Funcionar
         Funcionario existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionario nao encontrado"));
         updateEntity(existing, dto);
         existing.setUpdatedAt(Instant.now());
+        calcularEncargos(existing);
         return toDTO(repository.save(existing));
+    }
+
+    public void calcularEncargos(Funcionario f) {
+        if (f == null || f.getSalary() == null || f.getSalary().compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+        if (!"CLT".equalsIgnoreCase(f.getWorkRegime())) {
+            return;
+        }
+        java.util.Map<String, BigDecimal> percentuais = parametroService.findPercentuaisFolha();
+        BigDecimal salario = f.getSalary();
+        f.setInssEmployer(arredondar(calcular(salario, percentuais.get("INSS_PATRONAL_PERCENTUAL"))));
+        f.setFgts(arredondar(calcular(salario, percentuais.get("FGTS_PERCENTUAL"))));
+        f.setIrrf(arredondar(calcular(salario, percentuais.get("IRRF_PERCENTUAL"))));
+        f.setTransportAllowance(arredondar(calcular(salario, percentuais.get("TRANSPORTE_PERCENTUAL"))));
+        f.setMealAllowance(arredondar(calcular(salario, percentuais.get("ALIMENTACAO_PERCENTUAL"))));
+        f.setHealthInsurance(arredondar(calcular(salario, percentuais.get("SAUDE_PERCENTUAL"))));
+        f.setOtherBenefits(arredondar(calcular(salario, percentuais.get("BENEFICIOS_OUTROS_PERCENTUAL"))));
+        f.setThirteenthSalaryProvision(arredondar(calcular(salario, percentuais.get("DECIMO_TERCEIRO_PERCENTUAL"))));
+        f.setVacationProvision(arredondar(calcular(salario, percentuais.get("FERIAS_PERCENTUAL"))));
+        f.setVacationThirdProvision(arredondar(calcular(salario, percentuais.get("FERIAS_TERCO_PERCENTUAL"))));
+        f.setSeveranceFineProvision(arredondar(calcular(salario, percentuais.get("MULTA_RESCISORIA_PERCENTUAL"))));
+    }
+
+    private BigDecimal calcular(BigDecimal base, BigDecimal percentual) {
+        if (base == null || percentual == null) {
+            return BigDecimal.ZERO;
+        }
+        return base.multiply(percentual);
     }
 
     @Override

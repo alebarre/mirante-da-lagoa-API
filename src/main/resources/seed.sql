@@ -31,3 +31,18 @@ INSERT INTO eventos (id, title, description, start_at, end_at, location, organiz
 VALUES
   (gen_random_uuid(), 'Festa Junina 2026', 'Festa junina para moradores e familiares.', '2026-06-15 18:00:00', '2026-06-15 23:00:00', 'Salão de festas', 'Comissão de Eventos', 'CONFIRMADO', true, 120, 'Traje à carater é opcional.', now(), null),
   (gen_random_uuid(), 'Assembleia Geral', 'Assembleia ordinária de prestação de contas.', '2026-09-20 10:00:00', '2026-09-20 12:00:00', 'Salão de festas', 'Síndico', 'AGENDADO', true, null, 'Todos os proprietários convocados.', now(), null);
+
+-- Parâmetros de encargos e provisões trabalhistas (CLT vigente)
+INSERT INTO parametros_condominio (id, categoria, chave, descricao, valor_numerico, valor_texto, atualizado_em)
+VALUES
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'INSS_PATRONAL_PERCENTUAL', 'INSS patronal (aproximado para pequenas empresas / Simples diferenciado)', 0.2000, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'FGTS_PERCENTUAL', 'FGTS mensal sobre a remuneração (8%)', 0.0800, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'IRRF_PERCENTUAL', 'IRRF retido na fonte (teto médio simplificado)', 0.0750, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'TRANSPORTE_PERCENTUAL', 'Vale-transporte (6%, limitado legalmente)', 0.0600, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'ALIMENTACAO_PERCENTUAL', 'Vale-alimentação/refeição estimado', 0.0800, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'SAUDE_PERCENTUAL', 'Plano de saúde estimado sobre salário', 0.0500, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'BENEFICIOS_OUTROS_PERCENTUAL', 'Outros benefícios/eventuais', 0.0200, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'DECIMO_TERCEIRO_PERCENTUAL', 'Provisão de 13º salário (1/12 por mês)', 0.0833, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'FERIAS_PERCENTUAL', 'Provisão de férias (1/12 por mês)', 0.0833, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'FERIAS_TERCO_PERCENTUAL', 'Provisão de 1/3 de férias', 0.0278, null, now()),
+  (gen_random_uuid(), 'FOLHA_PAGAMENTO', 'MULTA_RESCISORIA_PERCENTUAL', 'Provisão de multa rescisória (FGTS + 40%)', 0.0320, null, now());
