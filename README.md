@@ -9,6 +9,7 @@ Backend do sistema de gestão do condomínio Mirante da Lagoa - Saquarema/RJ.
 - PostgreSQL (via Docker Compose)
 - JWT (JJWT)
 - Maven
+- Lombok 1.18.34
 
 ## Como executar
 
@@ -60,9 +61,20 @@ Na primeira execução, um usuário administrador é criado automaticamente:
 
 > Altere a senha após o primeiro login.
 
+## Funcionalidades principais
+
+- Autenticação JWT com perfis de acesso (ADMIN, SÍNDICO, PORTARIA, FUNCIONÁRIO, MORADOR)
+- Gestão de moradores, funcionários, compromissos, eventos e obrigações trabalhistas
+- Cadastro de funcionários com salário, encargos, benefícios e provisões trabalhistas
+- **Gerenciamento de percentuais de encargos trabalhistas** (`/api/parametros`)
+  - Permite configurar percentuais de INSS patronal, FGTS, IRRF, vale-transporte, vale-alimentação, plano de saúde, 13º salário, férias, 1/3 de férias e multa rescisória
+  - Cálculo automático dos encargos/provisões ao salvar funcionários com regime CLT
+
 ## Seed de dados
 
 Os scripts `src/main/resources/init.sql` (DDL) e `seed.sql` (dados iniciais) são executados automaticamente pelo PostgreSQL na primeira criação do container.
+
+A `seed.sql` já inclui os percentuais de encargos trabalhistas baseados na CLT vigente.
 
 ## Testes
 
