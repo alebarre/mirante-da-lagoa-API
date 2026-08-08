@@ -28,8 +28,29 @@ CREATE TABLE IF NOT EXISTS funcionarios (
     work_regime VARCHAR(50),
     bank_account VARCHAR(255),
     notes TEXT,
+    inss_employer DECIMAL(12,2),
+    fgts DECIMAL(12,2),
+    irrf DECIMAL(12,2),
+    transport_allowance DECIMAL(12,2),
+    meal_allowance DECIMAL(12,2),
+    health_insurance DECIMAL(12,2),
+    other_benefits DECIMAL(12,2),
+    thirteenth_salary_provision DECIMAL(12,2),
+    vacation_provision DECIMAL(12,2),
+    vacation_third_provision DECIMAL(12,2),
+    severance_fine_provision DECIMAL(12,2),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE TABLE IF NOT EXISTS funcionario_ocorrencias (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    funcionario_id UUID NOT NULL REFERENCES funcionarios(id) ON DELETE CASCADE,
+    tipo VARCHAR(50) NOT NULL,
+    data DATE,
+    descricao TEXT,
+    anexo VARCHAR(500),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS moradores (

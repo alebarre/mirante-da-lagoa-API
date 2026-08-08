@@ -1,6 +1,7 @@
 package br.com.mirantedalagoa.controller;
 
 import br.com.mirantedalagoa.dto.FuncionarioDTO;
+import br.com.mirantedalagoa.dto.FuncionarioResumoFinanceiroDTO;
 import br.com.mirantedalagoa.service.CrudService;
 import br.com.mirantedalagoa.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,12 @@ public class FuncionarioController extends GenericCrudController<FuncionarioDTO,
     @PreAuthorize("hasAnyRole('ADMIN','SINDICO','PORTARIA','FUNCIONARIO')")
     public ResponseEntity<List<FuncionarioDTO>> list() {
         return super.list();
+    }
+
+    @GetMapping("/resumo-financeiro")
+    @PreAuthorize("hasAnyRole('ADMIN','SINDICO')")
+    public ResponseEntity<FuncionarioResumoFinanceiroDTO> resumoFinanceiro() {
+        return ResponseEntity.ok(service.calcularResumoFinanceiro());
     }
 
     @Override

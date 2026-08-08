@@ -33,6 +33,21 @@ public class Funcionario {
     private String bankAccount;
     private String notes;
 
+    // Encargos e benefícios mensais
+    private BigDecimal inssEmployer;
+    private BigDecimal fgts;
+    private BigDecimal irrf;
+    private BigDecimal transportAllowance;
+    private BigDecimal mealAllowance;
+    private BigDecimal healthInsurance;
+    private BigDecimal otherBenefits;
+
+    // Provisões trabalhistas mensais
+    private BigDecimal thirteenthSalaryProvision;
+    private BigDecimal vacationProvision;
+    private BigDecimal vacationThirdProvision;
+    private BigDecimal severanceFineProvision;
+
     @Builder.Default
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
